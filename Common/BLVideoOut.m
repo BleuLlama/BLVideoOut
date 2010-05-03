@@ -123,12 +123,25 @@ static BLVideoOut * _sharedVideoOut;
 #pragma mark video on/off functionality
 
 - (void)startExternalScreen
-{
+{	
+	// reset this
+	extScreenActive = NO;
+	
 	// determine the correct resolution
 	NSArray * scrs = [UIScreen screens];
+	
+	if( !scrs || [scrs count] < 2 ) return;	// fail
 	UIScreen * extScreen = [[UIScreen screens] objectAtIndex:[scrs count]-1];
+	
+	
 	NSArray * modes = [extScreen availableModes];
+	if( !modes || [modes count] == 0 ) return; // fail
+	
+#ifdef kVideoPreferLowRes
 	UIScreenMode * uism = [modes objectAtIndex:0];
+#else
+	UIScreenMode * uism = [modes objectAtIndex:[modes count]-1];
+#endif
 	
 	// allocate a new window
 	CGRect frm = CGRectMake(0, 0, [uism size].width, [uism size].height);

@@ -42,6 +42,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 //	etc.
 #define kBLVideoOutFrameInterval		(2)
 
+// kVideoPreferLowRes - prefer a low res on the external display
+//	#define = Configure for the smallest available resolution on the external
+//  #undef = Configure for the largest available res on the extneral
+#undef kVideoPreferLowRes
+
 
 @interface BLVideoOut : NSObject 
 {	
