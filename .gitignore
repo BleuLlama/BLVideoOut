@@ -1,3 +1,6 @@
-build/*
+.DS_Store
+*.swp
+*~.nib
+build/
 *.mode1v3
 *.pbxuser
