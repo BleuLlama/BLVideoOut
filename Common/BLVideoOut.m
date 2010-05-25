@@ -1,5 +1,13 @@
 // BLVideoOut
 //		- a helper to simplify Video Out connections for iPhoneOS 3.2+ SDK
+//
+//  v1.1 2010-May-25	fix to get reconnections working.  now works 100%
+//						thanks to Steve Doss!
+//
+//	v1.0 2010-May-02	Initial version
+//						based on Erica Sadun's VTM talk sketchnotes
+//						fixes and corrections by go2 and Steven Smith
+//
 
 /*
  Copyright (c) 2010 Scott Lawrence / Umlautllama.com
@@ -140,7 +148,7 @@ static BLVideoOut * _sharedVideoOut;
 #ifdef kVideoPreferLowRes
 	UIScreenMode * uism = [modes objectAtIndex:0];
 #else
-	UIScreenMode * uism = [modes objectAtIndex:[modes count]-1];
+	UIScreenMode * uism = [modes lastObject];
 #endif
 	
 	// allocate a new window
@@ -153,6 +161,7 @@ static BLVideoOut * _sharedVideoOut;
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	
 	self.extWindow.screen = extScreen;
+	[self.extWindow.screen setCurrentMode:uism];  // not intuitive, but necessary
 	[self.extWindow makeKeyAndVisible];
 	extScreenActive = YES;	
 }

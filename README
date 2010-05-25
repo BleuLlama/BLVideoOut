@@ -1,4 +1,3 @@
-
 This is a helper class to help you with getting Video Out working with
 your iPhone OS 3.2 or greater SDK-OK application.
 
@@ -6,9 +5,13 @@ The core is the BLVideoOut.[hm] files, in the "Common" folder.
 
 There is an example that shows their use.
 
+V1.1: (2010-May-25)
+	Works 100% now!  Thanks, Steve Doss!
+
 V1.0: (2010-May-02)
 	NOTE: it currently works only if the display is connected at 
 	startup.  I'm looking into tracking down this issue right now.
+
 
 
 This source code is under the MIT license:

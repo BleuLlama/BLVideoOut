@@ -1,6 +1,9 @@
 // BLVideoOut
 //		- a helper to simplify Video Out connections for iPhoneOS 3.2+ SDK
 //
+//  v1.1 2010-May-25	fix to get reconnections working.  now works 100%
+//						thanks to Steve Doss!
+//
 //	v1.0 2010-May-02	Initial version
 //						based on Erica Sadun's VTM talk sketchnotes
 //						fixes and corrections by go2 and Steven Smith
