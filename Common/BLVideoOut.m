@@ -1,6 +1,11 @@
 // BLVideoOut
 //		- a helper to simplify Video Out connections for iPhoneOS 3.2+ SDK
 //
+//  v1.2 2010-Sep-04	fix so it will run properly on 3.x devices
+//						(so you can build it into one app to be run on new
+//						and old devices alike.
+//						added .canProvideVideoOut
+//
 //  v1.1 2010-May-25	fix to get reconnections working.  now works 100%
 //						thanks to Steve Doss!
 //
@@ -36,9 +41,15 @@
 
 #import "BLVideoOut.h"
 
+// for sysctlbyname, for setting 'canProvideVideoOut'
+#include <sys/types.h>
+#include <sys/sysctl.h>
+
+
 @interface BLVideoOut()
 - (void)startExternalScreen;
 - (void)terminateExternalScreen;
+- (void)determineIfCanProvideVideoOut;
 @end
 
 
@@ -46,6 +57,7 @@ static BLVideoOut * _sharedVideoOut;
 
 @implementation BLVideoOut
 @synthesize delegate, extScreenActive, extWindow;
+@synthesize canProvideVideoOut;
 
 #pragma mark - 
 #pragma mark classy stuff
@@ -54,6 +66,11 @@ static BLVideoOut * _sharedVideoOut;
     if (self = [super init]) {
         // Initialization code
 		extScreenActive = NO;
+		
+		[self determineIfCanProvideVideoOut];
+		
+		if( !canProvideVideoOut ) return self; // return before we crash
+		
 
 		// register to listen for screen count notifications
 		[[NSNotificationCenter defaultCenter] addObserver:self 
@@ -78,13 +95,16 @@ static BLVideoOut * _sharedVideoOut;
 
 - (void)dealloc 
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIScreenDidConnectNotification object:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIScreenDidDisconnectNotification object:nil];
-	
-	if (extScreenActive) {
-		[self terminateExternalScreen];
+	if( !canProvideVideoOut )
+	{
+		
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:UIScreenDidConnectNotification object:nil];
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:UIScreenDidDisconnectNotification object:nil];
+		
+		if (extScreenActive) {
+			[self terminateExternalScreen];
+		}
 	}
-	
 	[self.extWindow release];
     [super dealloc];
 }
@@ -100,6 +120,11 @@ static BLVideoOut * _sharedVideoOut;
 
 + (void) shutdown
 {
+	if( _sharedVideoOut.extWindow ) 
+	{
+		[_sharedVideoOut.extWindow setBackgroundColor:[UIColor blackColor]]; // just in case.
+	}
+	[_sharedVideoOut terminateExternalScreen];
 	[_sharedVideoOut release];
 	_sharedVideoOut = nil;
 }
@@ -126,6 +151,30 @@ static BLVideoOut * _sharedVideoOut;
 	}
 	return( s );
 }
+
+- (void) determineIfCanProvideVideoOut
+{
+	canProvideVideoOut = NO; // guilty until proven innocent.
+
+	// first, get the current device - (NOTE: This is low-level, but SDK-OK!)
+    char buffer[32]; // 32 bytes is plenty for our needs
+	buffer[0] = '\0'; // just in case
+    size_t length = sizeof(buffer);
+	
+    if (sysctlbyname("hw.machine", &buffer, &length, NULL, 0) == 0) 
+	{
+		// we have valid info, set our flag if need be		
+		if( !strcmp( buffer, "iPhone3,1" )) canProvideVideoOut = YES;	// iPhone 4
+		if( !strcmp( buffer, "iPad1,1" ))	canProvideVideoOut = YES;	// iPad 1 WiFi (*)
+		if( !strcmp( buffer, "iPad1,2" ))	canProvideVideoOut = YES;	// iPad 1 3G   (*)
+		if( !strcmp( buffer, "i386" ))		canProvideVideoOut = YES;	// simulator
+		
+		// (*) NOTE: Untested
+		
+		// Ref: http://umlautllama.com/w2/?action=view&page=iPhone%20Helpful%20Coding%20Tips#s_13
+    }
+}
+
 
 #pragma mark -
 #pragma mark video on/off functionality

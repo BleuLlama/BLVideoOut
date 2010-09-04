@@ -1,6 +1,10 @@
 // BLVideoOut
 //		- a helper to simplify Video Out connections for iPhoneOS 3.2+ SDK
 //
+//  v1.2 2010-Sep-04	fix so it will run properly on 3.x devices
+//						(so you can build it into one app to be run on new
+//						and old devices alike.
+//
 //  v1.1 2010-May-25	fix to get reconnections working.  now works 100%
 //						thanks to Steve Doss!
 //
@@ -39,6 +43,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 @protocol BLVideoOutDelegate;
 
+// NOTE: Be sure to weak-link UIKit.  If we do a "required" link, the 
+// "UIScreenDidConnectNotification" we rely on will not be found when run on 
+// iOS 3.0, 3.1, and will crash on run.
+//
+// Groups & Files -> Targets -> appname, right-click, [General]
+//    Linked Libraries->UIKit.framework -> "Weak"
+
+
 // kVideoOutFrameInterval - refresh interval to update
 //	1 = update every frame
 //	2 = update every second (every other) frame
@@ -57,11 +69,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 	UIWindow				*extWindow;
 	CADisplayLink			*displayLink;
 	BOOL					extScreenActive;
-
+	
+	BOOL					canProvideVideoOut;
 }
 @property (nonatomic, retain) 	<BLVideoOutDelegate> delegate;	// handler for connect/disconnect/update
 @property (nonatomic, retain) 	UIWindow *extWindow;
 @property (nonatomic) BOOL		extScreenActive;
+@property (readonly) BOOL		canProvideVideoOut;
 
 // use this to access it all - singletoney goodness
 + (BLVideoOut *) sharedVideoOut;
@@ -69,6 +83,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 // use this to terminate - it frees up some stuff inside
 + (void) shutdown;
 
+// determine if the device is even capable of supporting video out
+// NOTE: This will return TRUE if the device itself is capable of doing video out
+//       it will return TRUE even if there is no video out device attached.
 @end
 
 

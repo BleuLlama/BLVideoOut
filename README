@@ -1,9 +1,21 @@
 This is a helper class to help you with getting Video Out working with
 your iPhone OS 3.2 or greater SDK-OK application.
 
+Note: By weak-linking UIKit, you can use this on older iOS releases.  This is
+      useful if you want to release your app for 3.0, and allow for video out
+      on 3.2+ devices that allow for video out. (iPhone 4, iPad)
+
 The core is the BLVideoOut.[hm] files, in the "Common" folder.
 
 There is an example that shows their use.
+
+V1.2: (2010-Sep-04)
+	Added .canProvideVideoOut property - you can use this to determine
+	if video out is even a possibility on the running device.  This 
+	will be set to 'YES' when the device is capable of doing Video Out.
+	In these cases, this is 'YES' whether there is a video out device
+	attached or not.
+	Also adjusted startup code to accomodate this.
 
 V1.1: (2010-May-25)
 	Works 100% now!  Thanks, Steve Doss!
