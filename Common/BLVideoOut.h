@@ -50,6 +50,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 // Groups & Files -> Targets -> appname, right-click, [General]
 //    Linked Libraries->UIKit.framework -> "Weak"
 
+// NOTE2: to use this with a ViewController, http://gist.github.com/569309
+// also: http://www.iphonedevfaq.com/index.php?title=How_do_I_use_the_VGA_adapter_for_screen_mirroring_on_my_iPad
+
 
 // kVideoOutFrameInterval - refresh interval to update
 //	1 = update every frame

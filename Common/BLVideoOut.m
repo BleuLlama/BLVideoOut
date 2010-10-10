@@ -163,14 +163,13 @@ static BLVideoOut * _sharedVideoOut;
 	
     if (sysctlbyname("hw.machine", &buffer, &length, NULL, 0) == 0) 
 	{
-		// we have valid info, set our flag if need be		
+		// we have valid info, set our flag if need be
 		if( !strcmp( buffer, "iPhone3,1" )) canProvideVideoOut = YES;	// iPhone 4
-		if( !strcmp( buffer, "iPad1,1" ))	canProvideVideoOut = YES;	// iPad 1 WiFi (*)
-		if( !strcmp( buffer, "iPad1,2" ))	canProvideVideoOut = YES;	// iPad 1 3G   (*)
+		if( !strcmp( buffer, "iPod4,1" ))	canProvideVideoOut = YES;	// iPodTouch 4
+		if( !strcmp( buffer, "iPad1,1" ))	canProvideVideoOut = YES;	// iPad 1 WiFi
+		if( !strcmp( buffer, "iPad1,2" ))	canProvideVideoOut = YES;	// iPad 1 3G
 		if( !strcmp( buffer, "i386" ))		canProvideVideoOut = YES;	// simulator
-		
-		// (*) NOTE: Untested
-		
+				
 		// Ref: http://umlautllama.com/w2/?action=view&page=iPhone%20Helpful%20Coding%20Tips#s_13
     }
 }
